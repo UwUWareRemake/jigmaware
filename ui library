@@ -6,7 +6,7 @@ local ConfigurationFolder = RayfieldFolder.."/cfgs"
 local ConfigurationExtension = ".rfld"
 local RayFieldQuality = {}
 
-local Library = {
+local RayfieldLibrary = {
 	Flags = {},
 	Theme = {
 		Default = {
@@ -171,10 +171,10 @@ local SideBarClosed = true
 local BarType = 'Top'
 local Notifications = Rayfield.Notifications
 
-local SelectedTheme = Library.Theme.Default
+local SelectedTheme = RayfieldLibrary.Theme.Default
 
 function ChangeTheme(ThemeName)
-	SelectedTheme = Library.Theme[ThemeName]
+	SelectedTheme = RayfieldLibrary.Theme[ThemeName]
 	for _, obj in ipairs(Rayfield:GetDescendants()) do
 		if obj.ClassName == "TextLabel" or obj.ClassName == "TextBox" or obj.ClassName == "TextButton" then
 			if SelectedTheme.TextFont ~= "Default" then 
@@ -246,16 +246,16 @@ end
 local function LoadConfiguration(Configuration)
 	local Data = HttpService:JSONDecode(Configuration)
 	for FlagName, FlagValue in next, Data do
-		if Library.Flags[FlagName] then
+		if RayfieldLibrary.Flags[FlagName] then
 			spawn(function() 
-				if Library.Flags[FlagName].Type == "ColorPicker" then
-					Library.Flags[FlagName]:Set(UnpackColor(FlagValue))
+				if RayfieldLibrary.Flags[FlagName].Type == "ColorPicker" then
+					RayfieldLibrary.Flags[FlagName]:Set(UnpackColor(FlagValue))
 				else
-					if Library.Flags[FlagName].CurrentValue or Library.Flags[FlagName].CurrentKeybind or Library.Flags[FlagName].CurrentOption or Library.Flags[FlagName].Color ~= FlagValue then Library.Flags[FlagName]:Set(FlagValue) end
+					if RayfieldLibrary.Flags[FlagName].CurrentValue or RayfieldLibrary.Flags[FlagName].CurrentKeybind or RayfieldLibrary.Flags[FlagName].CurrentOption or RayfieldLibrary.Flags[FlagName].Color ~= FlagValue then RayfieldLibrary.Flags[FlagName]:Set(FlagValue) end
 				end    
 			end)
 		else
-			Library:Notify({Title = "Flag Error", Content = "Rayfield was unable to find '"..FlagName.. "'' in the current script"})
+			RayfieldLibrary:Notify({Title = "Flag Error", Content = "Rayfield was unable to find '"..FlagName.. "'' in the current script"})
 		end
 	end
 end
@@ -263,7 +263,7 @@ end
 local function SaveConfiguration()
 	if not CEnabled then return end
 	local Data = {}
-	for i,v in pairs(Library.Flags) do
+	for i,v in pairs(RayfieldLibrary.Flags) do
 		if v.Type == "ColorPicker" then
 			Data[i] = PackColor(v.Color)
 		else
@@ -583,7 +583,7 @@ function ClosePrompt()
 	wait(.5)
 	Prompt.Visible = false
 end
-function Library:Notify(NotificationSettings)
+function RayfieldLibrary:Notify(NotificationSettings)
 	spawn(function()
 		local ActionCompleted = true
 		local Notification = Notifications.Template:Clone()
@@ -609,7 +609,7 @@ function Library:Notify(NotificationSettings)
 				ActionCompleted = false
 				local NewAction = Notification.Actions.Template:Clone()
 				NewAction.BackgroundColor3 = SelectedTheme.NotificationActionsBackground
-				if SelectedTheme ~= Library.Theme.Default then
+				if SelectedTheme ~= RayfieldLibrary.Theme.Default then
 					NewAction.TextColor3 = SelectedTheme.TextColor
 				end
 				NewAction.Name = Action.Name
@@ -1086,7 +1086,7 @@ function Minimise()
 	Debounce = false
 end
 
-function Library:CreateWindow(Settings)
+function RayfieldLibrary:CreateWindow(Settings)
 	local Passthrough = false
 	Topbar.Title.Text = Settings.Name
 	Main.Size = UDim2.new(0, 450, 0, 260)
@@ -1276,7 +1276,7 @@ function Library:CreateWindow(Settings)
 						if writefile then
 							writefile(RayfieldFolder.."/Key System".."/"..Settings.KeySettings.FileName..ConfigurationExtension, Settings.KeySettings.Key)
 						end
-						Library:Notify({Title = "Key System", Content = "The key for this script has been saved successfully"})
+						RayfieldLibrary:Notify({Title = "Key System", Content = "The key for this script has been saved successfully"})
 					end
 				else
 					if AttemptsRemaining == 0 then
@@ -1338,7 +1338,7 @@ function Library:CreateWindow(Settings)
 				TweenService:Create(KeyMain.Hide, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {ImageTransparency = 1}):Play()
 				TweenService:Create(KeyMain.HideP, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {ImageTransparency = 1}):Play()
 				wait(0.51)
-				Library:Destroy()
+				RayfieldLibrary:Destroy()
 				KeyUI:Destroy()
 			end)
 		else
@@ -1449,7 +1449,7 @@ function Library:CreateWindow(Settings)
 			Elements.UIPageLayout:JumpTo(TabPage)
 			Elements.UIPageLayout.Animated = true
 		end
-		if SelectedTheme ~= Library.Theme.Default then
+		if SelectedTheme ~= RayfieldLibrary.Theme.Default then
 			TopTabButton.Shadow.Visible = false
 		end
 		TopTabButton.UIStroke.Color = SelectedTheme.TabStroke
@@ -2178,7 +2178,7 @@ function Library:CreateWindow(Settings)
 				end
 				if Settings.ConfigurationSaving then
 					if Settings.ConfigurationSaving.Enabled and DropdownSettings.Flag then
-						Library.Flags[DropdownSettings.Flag] = DropdownSettings
+						RayfieldLibrary.Flags[DropdownSettings.Flag] = DropdownSettings
 					end
 				end
 			end
@@ -2624,7 +2624,7 @@ function Library:CreateWindow(Settings)
 
 			if Settings.ConfigurationSaving then
 				if Settings.ConfigurationSaving.Enabled and DropdownSettings.Flag then
-					Library.Flags[DropdownSettings.Flag] = DropdownSettings
+					RayfieldLibrary.Flags[DropdownSettings.Flag] = DropdownSettings
 				end
 			end
 			function DropdownSettings:Destroy()
@@ -2812,7 +2812,7 @@ function Library:CreateWindow(Settings)
 
 			if Settings.ConfigurationSaving then
 				if Settings.ConfigurationSaving.Enabled and KeybindSettings.Flag then
-					Library.Flags[KeybindSettings.Flag] = KeybindSettings
+					RayfieldLibrary.Flags[KeybindSettings.Flag] = KeybindSettings
 				end
 			end
 			return KeybindSettings
@@ -2840,7 +2840,7 @@ function Library:CreateWindow(Settings)
 			else
 				Toggle.Parent = TabPage
 			end
-			if SelectedTheme ~= Library.Theme.Default then
+			if SelectedTheme ~= RayfieldLibrary.Theme.Default then
 				Toggle.Switch.Shadow.Visible = false
 			end
 			ToggleSettings.Locked = false
@@ -2989,7 +2989,7 @@ function Library:CreateWindow(Settings)
 
 			if Settings.ConfigurationSaving then
 				if Settings.ConfigurationSaving.Enabled and ToggleSettings.Flag then
-					Library.Flags[ToggleSettings.Flag] = ToggleSettings
+					RayfieldLibrary.Flags[ToggleSettings.Flag] = ToggleSettings
 				end
 			end
 
@@ -3225,7 +3225,7 @@ function Library:CreateWindow(Settings)
 
 			if Settings.ConfigurationSaving then
 				if Settings.ConfigurationSaving.Enabled and ColorPickerSettings.Flag then
-					Library.Flags[ColorPickerSettings.Flag] = ColorPickerSettings
+					RayfieldLibrary.Flags[ColorPickerSettings.Flag] = ColorPickerSettings
 				end
 			end
 
@@ -3299,7 +3299,7 @@ function Library:CreateWindow(Settings)
 			Slider.UIStroke.Transparency = 1
 			Slider.Title.TextTransparency = 1
 
-			if SelectedTheme ~= Library.Theme.Default then
+			if SelectedTheme ~= RayfieldLibrary.Theme.Default then
 				Slider.Main.Shadow.Visible = false
 			end
 
@@ -3445,7 +3445,7 @@ function Library:CreateWindow(Settings)
 			end
 			if Settings.ConfigurationSaving then
 				if Settings.ConfigurationSaving.Enabled and SliderSettings.Flag then
-					Library.Flags[SliderSettings.Flag] = SliderSettings
+					RayfieldLibrary.Flags[SliderSettings.Flag] = SliderSettings
 				end
 			end
 			return SliderSettings
@@ -3558,7 +3558,7 @@ function Library:CreateWindow(Settings)
 end
 
 
-function Library:Destroy()
+function RayfieldLibrary:Destroy()
 	Rayfield:Destroy()
 end
 
@@ -3644,16 +3644,16 @@ for _, TopbarButton in ipairs(Topbar:GetChildren()) do
 end
 
 
-function Library:LoadConfiguration()
+function RayfieldLibrary:LoadConfiguration()
 	if CEnabled then
 		pcall(function()
 			if isfile(ConfigurationFolder .. "/" .. CFileName .. ConfigurationExtension) then
 				LoadConfiguration(readfile(ConfigurationFolder .. "/" .. CFileName .. ConfigurationExtension))
-				Library:Notify({Title = "Configuration Loaded", Content = "The configuration file for this script has been loaded from a previous session"})
+				RayfieldLibrary:Notify({Title = "Configuration Loaded", Content = "The configuration file for this script has been loaded from a previous session"})
 			end
 		end)
 	end
 end
-task.delay(9, Library.LoadConfiguration, Library)
+task.delay(9, RayfieldLibrary.LoadConfiguration, RayfieldLibrary)
 
-return Library
+return RayfieldLibrary
