@@ -1,5 +1,5 @@
 local Release = getfenv().releaseversion
-local NotificationDuration = 6.5
+local NotificationDuration = 3
 local RayfieldFolder = "jigmaware"
 local ConfigurationFolder = RayfieldFolder.."/Configurations"
 local ConfigurationExtension = ".rfld"
